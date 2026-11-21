@@ -21,8 +21,11 @@ create policy "Perfil propio: actualización"
   using ((select auth.uid()) = id)
   with check ((select auth.uid()) = id);
 
--- El usuario solo puede editar su nombre: el rol no es modificable desde el cliente.
-revoke update on public.profiles from authenticated, anon;
+-- Privilegios explícitos (el proyecto no expone tablas nuevas a la Data API por defecto).
+-- anon no tiene acceso; el usuario autenticado lee su perfil y solo puede editar su nombre,
+-- nunca su rol.
+revoke all on public.profiles from anon, authenticated;
+grant select on public.profiles to authenticated;
 grant update (full_name, updated_at) on public.profiles to authenticated;
 
 -- Crea el perfil al registrarse un usuario.

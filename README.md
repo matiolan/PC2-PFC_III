@@ -8,7 +8,7 @@ Prototipo de la **Práctica Calificada 2** — Next.js + Supabase + Vercel, con 
 | | |
 |---|---|
 | Jira | [Tablero PFC](https://matiosystem.atlassian.net/jira/software/projects/PFC/boards/2/backlog) |
-| Producción | _se completa tras el primer deploy en Vercel_ |
+| Producción | https://pc2-pfc-iii.vercel.app |
 | Stack | [ADR 0001](docs/adr/0001-stack.md) |
 | Flujo de trabajo | [CONTRIBUTING.md](CONTRIBUTING.md) |
 | Seguridad | [SECURITY.md](SECURITY.md) |
