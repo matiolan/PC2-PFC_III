@@ -1,0 +1,36 @@
+name: Convenciones de PR
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  jira-key:
+    name: Rama y título con clave Jira
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Validar rama y título
+        env:
+          BRANCH: ${{ github.head_ref }}
+          TITLE: ${{ github.event.pull_request.title }}
+          BASE: ${{ github.base_ref }}
+        run: |
+          ok=1
+          # develop -> main (release) no necesita clave en la rama
+          if [ "$BASE" = "main" ] && [ "$BRANCH" = "develop" ]; then
+            echo "Release develop -> main"
+          elif ! printf '%s' "$BRANCH" | grep -Eq '^(feature|fix|hotfix|chore|docs)/PFC-[0-9]+-[a-z0-9-]+$'; then
+            echo "::error::La rama '$BRANCH' debe seguir: feature|fix|hotfix|chore|docs/PFC-<n>-descripcion-corta"
+            ok=0
+          fi
+          if ! printf '%s' "$TITLE" | grep -Eq 'PFC-[0-9]+'; then
+            echo "::error::El título del PR debe incluir la clave Jira (ej. 'PFC-8 feat: pipeline CI')"
+            ok=0
+          fi
+          [ "$ok" = "1" ] && echo "Convenciones OK ✅"
+          [ "$ok" = "1" ]

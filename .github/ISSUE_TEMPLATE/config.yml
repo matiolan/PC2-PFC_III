@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Backlog en Jira (PFC)
+    url: https://matiosystem.atlassian.net/jira/software/projects/PFC/boards/2/backlog
+    about: Las historias, tareas y errores se gestionan en Jira.
+  - name: Reportar una vulnerabilidad
+    url: https://github.com/matiolan/PC2-PFC_III/security/advisories/new
+    about: Reporta vulnerabilidades de forma privada, no en un issue público.
