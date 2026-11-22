@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildQuoteMessage,
+  deriveKpis,
   describeAudit,
   dozenSavings,
   formalizationPercent,
@@ -111,5 +112,41 @@ describe("auditoría (HU18)", () => {
     expect(describeAudit("oferta_publicada", { titulo: "Cortador", sueldo: 1650 })).toBe("Cortador · S/ 1650");
     expect(describeAudit("negocio_registrado", { nombre: "Telas Soto" })).toBe("Telas Soto");
     expect(describeAudit("postulacion_enviada", {})).toBe("");
+  });
+});
+
+describe("indicadores del gestor (HU17)", () => {
+  const stats = {
+    total: 10,
+    por_nivel: { "0": 2, "1": 2, "2": 2, "3": 2, "4": 2 },
+    por_ubicacion: { galeria: 7, via_publica: 3 },
+    por_galeria: [],
+    evidencias_pendientes: 2,
+    evidencias_aprobadas: 18,
+    evidencias_observadas: 2,
+    horas_promedio_revision: 20,
+    ofertas_abiertas: 6,
+    vacantes: 10,
+    postulaciones: 4,
+    seleccionados: 1,
+    sueldo_promedio: 1353,
+    rmv: 1230,
+  };
+  it("calcula la tasa de formalización (nivel 2 o más)", () => {
+    const k = deriveKpis(stats);
+    expect(k.formalizados).toBe(6);
+    expect(k.tasaFormalizacion).toBe(60);
+  });
+  it("calcula aprobación, colocación y sueldo frente a la RMV", () => {
+    const k = deriveKpis(stats);
+    expect(k.tasaAprobacion).toBe(90);
+    expect(k.tasaColocacion).toBe(25);
+    expect(k.sueldoSobreRmv).toBe(10);
+    expect(k.revisionEnPlazo).toBe(true);
+  });
+  it("no divide entre cero", () => {
+    const k = deriveKpis({ ...stats, total: 0, postulaciones: 0, evidencias_aprobadas: 0, evidencias_observadas: 0 });
+    expect(k.tasaFormalizacion).toBe(0);
+    expect(k.tasaColocacion).toBe(0);
   });
 });

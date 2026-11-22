@@ -50,3 +50,7 @@ supabase/.branches
 # playwright
 /test-results
 /playwright-report
+
+# Playwright
+/playwright-report
+/test-results
