@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { newPasswordSchema, safeNextPath, signInSchema, signUpSchema } from "./validation";
+import { businessSchema, newPasswordSchema, safeNextPath, signInSchema, signUpSchema } from "./validation";
 
 describe("registro (HU01)", () => {
   const ok = { fullName: "Rosa Quispe", email: "  ROSA@Correo.pe ", password: "Gamarra2026", role: "emprendedor" };
@@ -30,5 +30,34 @@ describe("inicio de sesión y recuperación (HU02)", () => {
     expect(safeNextPath("https://malicioso.com")).toBe("/panel");
     expect(safeNextPath("//malicioso.com")).toBe("/panel");
     expect(safeNextPath(undefined)).toBe("/panel");
+  });
+});
+
+describe("registro del negocio (HU04)", () => {
+  const base = { name: "Pima Andina", category: "Damas", description: "", whatsapp: "987 654 321" };
+  it("en vía pública no exige galería ni stand, solo la zona", () => {
+    const r = businessSchema.safeParse({ ...base, location_type: "via_publica", zone: "Jr. Gamarra cuadra 7", gallery_id: "" });
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect(r.data.gallery_id).toBeNull();
+      expect(r.data.whatsapp).toBe("987654321");
+    }
+  });
+  it("en galería exige galería y stand", () => {
+    const r = businessSchema.safeParse({ ...base, location_type: "galeria", gallery_id: "", stand: "" });
+    expect(r.success).toBe(false);
+    if (!r.success) {
+      const paths = r.error.issues.map((i) => i.path[0]);
+      expect(paths).toContain("gallery_id");
+      expect(paths).toContain("stand");
+    }
+  });
+  it("valida el formato peruano del WhatsApp", () => {
+    const r = businessSchema.safeParse({ ...base, whatsapp: "12345", location_type: "via_publica", zone: "x" });
+    expect(r.success).toBe(false);
+  });
+  it("acepta el prefijo +51", () => {
+    const r = businessSchema.safeParse({ ...base, whatsapp: "+51 987654321", location_type: "via_publica", zone: "Cuadra 5" });
+    expect(r.success && r.data.whatsapp).toBe("987654321");
   });
 });
