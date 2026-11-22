@@ -28,7 +28,7 @@ export default async function VitrinaPage({ searchParams }: PageProps<"/vitrina"
   let query = supabase
     .from("products")
     .select(
-      "id, name, category, image_url, price_unit, price_dozen, min_order, created_at, businesses!inner(name, slug, level, location_type, zone, gallery_id, galleries(name))",
+      "id, name, category, image_url, price_unit, price_dozen, min_order, created_at, businesses!inner(name, slug, level, whatsapp, location_type, zone, gallery_id, galleries(name))",
       { count: "exact" },
     )
     .eq("active", true);
@@ -45,6 +45,7 @@ export default async function VitrinaPage({ searchParams }: PageProps<"/vitrina"
       name: p.businesses.name,
       slug: p.businesses.slug,
       level: p.businesses.level,
+      whatsapp: p.businesses.whatsapp,
       place: p.businesses.location_type === "galeria" ? (p.businesses.galleries?.name ?? "Galería") : `Vía pública · ${p.businesses.zone ?? ""}`,
     },
   }));
