@@ -13,5 +13,8 @@ export const PANEL_NAV: Record<Role, NavItem[]> = {
     { href: "/panel", label: "Resumen", icon: "home" },
     { href: "/vitrina", label: "Vitrina mayorista", icon: "store" },
   ],
-  gestor: [{ href: "/panel", label: "Resumen", icon: "home" }],
+  gestor: [
+    { href: "/panel", label: "Resumen", icon: "home" },
+    { href: "/panel/verificaciones", label: "Verificaciones", icon: "check" },
+  ],
 };
