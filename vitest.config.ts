@@ -16,6 +16,7 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "lcov", "json-summary"],
       include: ["src/lib/**"],
+      exclude: ["src/lib/supabase/**", "src/lib/**/*.types.ts"],
     },
   },
 });
