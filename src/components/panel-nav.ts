@@ -23,5 +23,6 @@ export const PANEL_NAV: Record<Role, NavItem[]> = {
   gestor: [
     { href: "/panel", label: "Resumen", icon: "home" },
     { href: "/panel/verificaciones", label: "Verificaciones", icon: "check" },
+    { href: "/panel/auditoria", label: "Auditoría", icon: "log" },
   ],
 };
