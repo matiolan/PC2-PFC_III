@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { businessSchema, newPasswordSchema, safeNextPath, signInSchema, signUpSchema } from "./validation";
+import {
+  businessSchema,
+  fieldErrors,
+  formValues,
+  newPasswordSchema,
+  safeNextPath,
+  signInSchema,
+  signUpSchema,
+} from "./validation";
 
 describe("registro (HU01)", () => {
   const ok = { fullName: "Rosa Quispe", email: "  ROSA@Correo.pe ", password: "Gamarra2026", role: "emprendedor" };
@@ -59,5 +67,23 @@ describe("registro del negocio (HU04)", () => {
   it("acepta el prefijo +51", () => {
     const r = businessSchema.safeParse({ ...base, whatsapp: "+51 987654321", location_type: "via_publica", zone: "Cuadra 5" });
     expect(r.success && r.data.whatsapp).toBe("987654321");
+  });
+});
+
+describe("utilidades de formularios", () => {
+  it("convierte FormData en texto y omite campos internos de React", () => {
+    const fd = new FormData();
+    fd.set("name", "Pima");
+    fd.set("$ACTION_ID_x", "1");
+    fd.set("file", new Blob(["x"]));
+    expect(formValues(fd)).toEqual({ name: "Pima" });
+  });
+  it("agrupa los errores por campo", () => {
+    const r = signInSchema.safeParse({ email: "x", password: "" });
+    expect(r.success).toBe(false);
+    if (!r.success) {
+      const errs = fieldErrors(r.error);
+      expect(Object.keys(errs ?? {})).toEqual(expect.arrayContaining(["email", "password"]));
+    }
   });
 });
