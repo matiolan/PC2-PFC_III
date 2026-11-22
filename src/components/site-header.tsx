@@ -16,7 +16,7 @@ export async function SiteHeader({ dark = false }: { dark?: boolean }) {
     <header
       className={clsx(
         "sticky top-0 z-40 border-b backdrop-blur-xl",
-        dark ? "border-white/10 bg-ink-950/70" : "border-ink-200/70 bg-background/80",
+        dark ? "border-white/10 bg-ink-950/95" : "border-ink-200/70 bg-background/80",
       )}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6">

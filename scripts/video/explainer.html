@@ -1,0 +1,128 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1280px;height:720px;overflow:hidden;font-family:"DM Sans",sans-serif;background:#0b0a14;color:#fff;position:relative}
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:32px 32px}
+.orb{position:absolute;border-radius:50%;filter:blur(90px)}
+#o1{width:560px;height:560px;background:rgba(101,68,245,.45);left:-160px;top:-120px}
+#o2{width:460px;height:460px;background:rgba(255,122,26,.28);right:-120px;bottom:-140px}
+.scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:70px;opacity:0}
+.cap{width:420px}
+.step{font-size:15px;letter-spacing:.18em;text-transform:uppercase;color:#ff9a45;font-weight:700}
+.title{font-size:52px;font-weight:700;line-height:1.05;margin-top:12px;letter-spacing:-.02em}
+.sub{font-size:20px;color:rgba(255,255,255,.6);margin-top:16px;line-height:1.4}
+.card{width:470px;background:#fff;color:#16141f;border-radius:28px;padding:30px;box-shadow:0 40px 100px -30px rgba(101,68,245,.7)}
+.lbl{font-size:13px;color:#6b6779;margin-top:16px}
+.inp{height:46px;border-radius:12px;border:2px solid #dcdae3;margin-top:6px;padding:0 14px;display:flex;align-items:center;font-size:17px;font-weight:500}
+.btn{height:50px;border-radius:14px;background:#5130e0;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:22px;font-size:17px}
+.pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px}
+.drop{height:150px;border:3px dashed #c9c1ff;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;margin-top:16px;position:relative;overflow:hidden}
+.bar{height:10px;border-radius:99px;background:#ecebf0;overflow:hidden;margin-top:16px}
+.bar>div{height:100%;background:linear-gradient(90deg,#6544f5,#ff7a1a);width:0}
+.row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:#f6f5f1;margin-top:10px;font-weight:600;font-size:15px}
+.dot{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:14px;background:#dcdae3}
+.cursor{position:absolute;width:26px;height:26px;pointer-events:none}
+.wa{position:absolute;width:330px;background:#e7ffdb;color:#16141f;border-radius:20px;padding:16px;font-size:16px;box-shadow:0 30px 60px -20px rgba(0,0,0,.5)}
+.prod{width:200px;background:#fff;border-radius:20px;overflow:hidden;color:#16141f;position:absolute;box-shadow:0 20px 50px -20px rgba(0,0,0,.5)}
+.prod img{width:100%;height:130px;object-fit:cover;display:block}
+.prod .b{padding:12px;font-size:14px;font-weight:700}
+.logo{display:flex;align-items:center;gap:18px;font-size:54px;font-weight:700;letter-spacing:-.02em}
+</style></head><body>
+<div class="grid"></div><div class="orb" id="o1"></div><div class="orb" id="o2"></div>
+
+<!-- Escena 1 -->
+<div class="scene" id="s1">
+  <div class="cap"><div class="step">Paso 1</div><div class="title">Registra tu negocio</div><div class="sub">En galería o en la calle. En dos minutos.</div></div>
+  <div class="card">
+    <div style="font-weight:700;font-size:22px">Registra tu negocio</div>
+    <div class="lbl">Nombre comercial</div><div class="inp" id="t1"></div>
+    <div class="lbl">Ubicación</div><div class="inp" id="t2"></div>
+    <div class="btn" id="b1">Registrar mi negocio</div>
+    <div style="margin-top:18px;text-align:center"><span class="pill" id="p1" style="background:#ecebf0;color:#3a3647;opacity:0">🌱 Nivel 0 · Registrado</span></div>
+  </div>
+</div>
+<!-- Escena 2 -->
+<div class="scene" id="s2">
+  <div class="cap"><div class="step">Paso 2</div><div class="title">Sube tu ficha RUC</div><div class="sub">Va a un almacenamiento privado: solo tú y el gestor la ven.</div></div>
+  <div class="card">
+    <div style="font-weight:700;font-size:22px">Nivel 2 · Con RUC</div>
+    <div class="lbl">Número de RUC</div><div class="inp" id="t3"></div>
+    <div class="drop"><div id="file" style="font-size:44px">📄</div><div style="font-size:15px;color:#6b6779" id="ftxt">Arrastra tu documento</div></div>
+    <div class="bar"><div id="bar2"></div></div>
+    <div style="margin-top:14px;font-weight:700;color:#0b8a73;opacity:0" id="ok2">✓ Enviado para verificación</div>
+  </div>
+</div>
+<!-- Escena 3 -->
+<div class="scene" id="s3">
+  <div class="cap"><div class="step">Paso 3</div><div class="title">El gestor lo verifica</div><div class="sub">En menos de 48 horas. Tu insignia sube sola.</div></div>
+  <div class="card" style="position:relative">
+    <div style="font-weight:700;font-size:22px">Ruta de formalización</div>
+    <div class="row"><span class="dot" style="background:#10a88c">✓</span>Registrado</div>
+    <div class="row"><span class="dot" style="background:#10a88c">✓</span>DNI del titular</div>
+    <div class="row"><span class="dot" id="d3">2</span>Ficha RUC<span style="margin-left:auto;font-size:13px;color:#e8600a" id="rev">En revisión</span></div>
+    <div class="row" style="opacity:.5"><span class="dot">3</span>Licencia municipal</div>
+    <div style="display:flex;gap:10px;margin-top:18px"><div class="btn" id="apr" style="flex:1;margin:0;background:#0b8a73">Aprobar</div><div class="btn" style="flex:1;margin:0;background:#fff;color:#16141f;border:2px solid #dcdae3">Observar</div></div>
+    <div style="margin-top:16px;text-align:center"><span class="pill" id="p3" style="background:#f1efff;color:#4224bb;border:2px solid #c9c1ff;opacity:0">🏛️ Con RUC · nivel 2</span></div>
+    <svg class="cursor" id="cur" viewBox="0 0 24 24"><path d="M3 2l7 19 2.5-7.5L20 11z" fill="#16141f" stroke="#fff" stroke-width="1.5"/></svg>
+  </div>
+</div>
+<!-- Escena 4 -->
+<div class="scene" id="s4">
+  <div class="cap"><div class="step">Paso 4</div><div class="title">Te encuentran y cotizan</div><div class="sub">Primero los negocios verificados. Cotización directa por WhatsApp.</div></div>
+  <div style="width:520px;height:440px;position:relative">
+    <div class="prod" id="pa" style="left:0;top:20px"><img src="../../public/productos/polo.svg"><div class="b">Polo pima 30/1<br><span style="color:#5130e0">S/ 180 docena</span></div></div>
+    <div class="prod" id="pb" style="left:220px;top:60px"><img src="../../public/productos/jean.svg"><div class="b">Jean stretch<br><span style="color:#5130e0">S/ 480 docena</span></div></div>
+    <div class="wa" id="wa" style="left:150px;top:270px;opacity:0"><div style="font-size:13px;font-weight:700;color:#146c36">💬 WhatsApp</div><div style="margin-top:6px">Hola, quisiera cotizar 48 unidades de «Polo pima 30/1». ¿Precio y entrega?</div></div>
+  </div>
+</div>
+<!-- Escena 5 -->
+<div class="scene" id="s5">
+  <div class="cap"><div class="step">Paso 5</div><div class="title">Contrata en regla</div><div class="sub">Ofertas con sueldo igual o mayor a la RMV, horario y contrato claros.</div></div>
+  <div class="card">
+    <div class="pill" style="background:#fff6ec;color:#e8600a">💼 Nueva oferta</div>
+    <div style="font-weight:700;font-size:26px;margin-top:14px">Operaria de remalladora</div>
+    <div style="color:#6b6779;margin-top:6px">Plazo indeterminado · Lunes a sábado 8:00–17:00</div>
+    <div style="font-size:40px;font-weight:700;color:#0b8a73;margin-top:16px" id="sal">S/ 0</div>
+    <div style="margin-top:10px;font-weight:700;color:#0b8a73;opacity:0" id="rmv">✓ Cumple la RMV (S/ 1,230)</div>
+    <div class="btn" style="background:#16141f">3 postulantes nuevos</div>
+  </div>
+</div>
+<!-- Final -->
+<div class="scene" id="s6" style="flex-direction:column;gap:20px">
+  <div class="logo"><svg width="72" height="72" viewBox="0 0 40 40"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6544f5"/><stop offset="1" stop-color="#ff7a1a"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#g)"/><path d="M27.5 13.2a10 10 0 1 0 1.9 9.3H20.5" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/></svg>Gamarra<span style="color:#ff9a45">Conecta</span></div>
+  <div class="sub" style="font-size:24px">Formalízate paso a paso. Vende más desde hoy.</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const ease=x=>1-Math.pow(1-clamp(x),3);
+const prog=(t,a,b)=>ease((t-a)/(b-a));
+function scene(id,t,a,b){const el=$(id);const fin=prog(t,a,a+.5),fout=1-prog(t,b-.4,b);const v=Math.min(fin,fout);el.style.opacity=v;el.style.transform=`translateY(${(1-fin)*30-(1-fout)*30}px)`;return t-a;}
+function type(el,text,p){el.textContent=text.slice(0,Math.round(text.length*clamp(p)));}
+window.render=function(t){
+  $('o1').style.transform=`translate(${Math.sin(t/3)*60}px,${Math.cos(t/4)*40}px)`;
+  $('o2').style.transform=`translate(${Math.cos(t/3)*-50}px,${Math.sin(t/4)*30}px)`;
+  let l=scene('s1',t,0,3.2);
+  type($('t1'),'Confecciones Ñusta',(l-.5)/1); type($('t2'),'Galería Los Telares · stand 205',(l-1.3)/1);
+  $('b1').style.transform=`scale(${l>2.3&&l<2.45?0.95:1})`; $('p1').style.opacity=prog(l,2.4,2.7);
+  l=scene('s2',t,3.2,6.6);
+  type($('t3'),'20123456789',(l-.4)/.8);
+  const drop=prog(l,1.2,1.7); $('file').style.transform=`translateY(${(1-drop)*-120}px) scale(${.6+drop*.4})`;
+  $('ftxt').textContent= l>1.7?'ficha-ruc.pdf · 380 KB':'Arrastra tu documento';
+  $('bar2').style.width=`${prog(l,1.8,2.7)*100}%`; $('ok2').style.opacity=prog(l,2.7,2.95);
+  l=scene('s3',t,6.6,9.8);
+  const cx=380-prog(l,.5,1.4)*230, cy=60+prog(l,.5,1.4)*290; $('cur').style.left=cx+'px'; $('cur').style.top=cy+'px';
+  const clicked=l>1.5; $('apr').style.transform=`scale(${l>1.45&&l<1.6?0.94:1})`;
+  $('d3').style.background=clicked?'#10a88c':'#dcdae3'; $('d3').textContent=clicked?'✓':'2';
+  $('rev').textContent=clicked?'Aprobado':'En revisión'; $('rev').style.color=clicked?'#0b8a73':'#e8600a';
+  $('p3').style.opacity=prog(l,1.7,2.1); $('p3').style.transform=`scale(${.8+prog(l,1.7,2.1)*.2})`;
+  l=scene('s4',t,9.8,13);
+  const sw=prog(l,.6,1.3); $('pa').style.left=(sw*220)+'px'; $('pa').style.top=(20+sw*40)+'px'; $('pb').style.left=(220-sw*220)+'px'; $('pb').style.top=(60-sw*40)+'px';
+  $('pa').style.zIndex=2; $('wa').style.opacity=prog(l,1.6,2); $('wa').style.transform=`translateY(${(1-prog(l,1.6,2))*30}px)`;
+  l=scene('s5',t,13,15.6);
+  $('sal').textContent='S/ '+Math.round(prog(l,.5,1.5)*1500).toLocaleString('en-US')+'.00'; $('rmv').style.opacity=prog(l,1.5,1.8);
+  l=scene('s6',t,15.6,18.2);
+};
+window.render(0);
+</script></body></html>
