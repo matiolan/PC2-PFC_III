@@ -1,0 +1,66 @@
+name: E2E y DAST
+
+# HU23: se ejecuta cuando Vercel termina un despliegue exitoso y también a demanda.
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: URL a probar
+        required: true
+        default: https://pc2-pfc-iii.vercel.app
+  schedule:
+    - cron: "0 12 * * 1" # lunes 07:00 hora Lima, sobre producción
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-dast-${{ github.event.deployment_status.environment_url || github.event.inputs.url || 'prod' }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: E2E · Playwright
+    if: github.event_name != 'deployment_status' || (github.event.deployment_status.state == 'success' && github.event.deployment_status.environment == 'Production')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BASE_URL: ${{ github.event.deployment_status.environment_url || github.event.inputs.url || 'https://pc2-pfc-iii.vercel.app' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Pruebas E2E contra ${{ env.BASE_URL }}
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7
+
+  dast:
+    name: DAST · OWASP ZAP
+    needs: e2e
+    if: always() && (github.event_name != 'deployment_status' || (github.event.deployment_status.state == 'success' && github.event.deployment_status.environment == 'Production'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Escaneo pasivo (baseline)
+        uses: zaproxy/action-baseline@v0.14.0
+        with:
+          target: ${{ github.event.deployment_status.environment_url || github.event.inputs.url || 'https://pc2-pfc-iii.vercel.app' }}
+          rules_file_name: .zap/rules.tsv
+          cmd_options: "-a -j"
+          allow_issue_writing: false
+          fail_action: false
+          artifact_name: zap-report
