@@ -31,7 +31,7 @@ export function CatalogFilters({ galleries }: { galleries: { id: string; name: s
       onChange={(e) => {
         if ((e.target as HTMLElement).tagName === "SELECT") apply(e.currentTarget);
       }}
-      className="grid gap-3 rounded-2xl bg-white p-3 ring-1 ring-ink-200/70 shadow-[var(--shadow-soft)] md:grid-cols-[1fr_auto_auto_auto_auto]"
+      className="grid gap-3 rounded-2xl bg-white p-3 ring-1 ring-ink-200/70 shadow-[var(--shadow-soft)] md:grid-cols-[1fr_auto_auto_auto_auto_auto]"
     >
       <label className="relative">
         <span className="sr-only">Buscar productos</span>
@@ -57,6 +57,13 @@ export function CatalogFilters({ galleries }: { galleries: { id: string; name: s
           </option>
         ))}
         <option value="via-publica">Vía pública</option>
+      </select>
+      <select name="nivel" defaultValue={params.get("nivel") ?? ""} aria-label="Nivel mínimo de formalización" className="h-11 rounded-xl bg-ink-50 px-3 text-sm ring-1 ring-ink-100">
+        <option value="">Cualquier nivel</option>
+        <option value="1">Con DNI o más</option>
+        <option value="2">Con RUC o más</option>
+        <option value="3">Con licencia o más</option>
+        <option value="4">Solo verificados</option>
       </select>
       <button type="submit" className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 text-sm font-medium text-white hover:bg-brand-700">
         {pending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Search className="size-4" aria-hidden />} Buscar
