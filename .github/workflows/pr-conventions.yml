@@ -21,9 +21,9 @@ jobs:
           BASE: ${{ github.base_ref }}
         run: |
           ok=1
-          # develop -> main (release) no necesita clave en la rama
-          if [ "$BASE" = "main" ] && [ "$BRANCH" = "develop" ]; then
-            echo "Release develop -> main"
+          # test -> main (release del sprint) no necesita clave en la rama
+          if [ "$BASE" = "main" ] && [ "$BRANCH" = "test" ]; then
+            echo "Release test -> main"
           elif ! printf '%s' "$BRANCH" | grep -Eq '^(feature|fix|hotfix|chore|docs)/PFC-[0-9]+-[a-z0-9-]+$'; then
             echo "::error::La rama '$BRANCH' debe seguir: feature|fix|hotfix|chore|docs/PFC-<n>-descripcion-corta"
             ok=0

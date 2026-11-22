@@ -5,7 +5,7 @@
 | Rama | Uso | Despliegue |
 |---|---|---|
 | `main` | Producción. Protegida. | Vercel Production |
-| `develop` | Integración del sprint. | Vercel Preview |
+| `test` | Integración y pruebas del sprint. | Vercel Preview |
 | `feature/PFC-xx-descripcion` | Historias y tareas | Preview por PR |
 | `fix/PFC-xx-descripcion` | Corrección de errores | Preview por PR |
 
@@ -25,11 +25,11 @@ La clave `PFC-xx` hace que la rama, los commits y el PR aparezcan en el panel **
 
 ## Pull Requests
 
-1. Crea la rama desde `develop`.
-2. Abre el PR hacia `develop` con título `PFC-xx tipo: descripción`.
+1. Crea la rama desde `test`.
+2. Abre el PR hacia `test` con título `PFC-xx tipo: descripción`.
 3. Deben pasar **CI**, **Seguridad** y **Convenciones de PR**.
-4. Revisa el Preview Deployment de Vercel y haz *squash merge*.
-5. Al cerrar el sprint: PR `develop → main` para publicar en producción.
+4. Revisa el Preview Deployment de Vercel y fusiona con *merge commit* (conserva los commits con la clave de Jira para la trazabilidad).
+5. Al cerrar el sprint: PR `test → main` para publicar en producción.
 
 ## Local
 

@@ -8,7 +8,7 @@ Prototipo de la **Práctica Calificada 2** — Next.js + Supabase + Vercel, con 
 | | |
 |---|---|
 | Jira | [Tablero PFC](https://matiosystem.atlassian.net/jira/software/projects/PFC/boards/2/backlog) |
-| Producción | _se completa tras el primer deploy en Vercel_ |
+| Producción | https://pc2-pfc-iii.vercel.app |
 | Stack | [ADR 0001](docs/adr/0001-stack.md) |
 | Flujo de trabajo | [CONTRIBUTING.md](CONTRIBUTING.md) |
 | Seguridad | [SECURITY.md](SECURITY.md) |
@@ -17,7 +17,7 @@ Prototipo de la **Práctica Calificada 2** — Next.js + Supabase + Vercel, con 
 
 | Workflow | Cuándo | Qué valida |
 |---|---|---|
-| **CI** | PR y push a `main`/`develop` | ESLint · TypeScript · Vitest + cobertura · `next build` |
+| **CI** | PR y push a `main`/`test` | ESLint · TypeScript · Vitest + cobertura · `next build` |
 | **Seguridad** | PR, push y semanal | CodeQL (SAST) · Gitleaks · Dependency Review · npm audit |
 | **Convenciones de PR** | PR | Rama `feature/PFC-xx-...` y título con clave Jira |
 | **Vercel** | Cada push | Preview por PR · Producción desde `main` |

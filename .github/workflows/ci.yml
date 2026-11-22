@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [main, test]
   push:
-    branches: [main, develop]
+    branches: [main, test]
   workflow_dispatch:
 
 permissions:
@@ -81,3 +81,6 @@ jobs:
         run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: 1
+          # Valores públicos de ejemplo: el build no se conecta a Supabase.
+          NEXT_PUBLIC_SUPABASE_URL: https://ejemplo.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: clave-publica-de-ejemplo-para-build
