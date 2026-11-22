@@ -3,6 +3,8 @@ import Link from "next/link";
 import { ArrowRight, BadgeCheck, Briefcase, ClipboardCheck, Store } from "lucide-react";
 import { Alert, ButtonLink, Card, PageHeader } from "@/components/ui";
 import { requireSession, type Session } from "@/lib/auth";
+import { LevelBadge } from "@/components/level-badge";
+import { CopyButton } from "@/components/copy-button";
 import { createClient } from "@/lib/supabase/server";
 import { formalizationPercent, levelInfo, ROLE_INFO } from "@/lib/domain";
 
@@ -90,6 +92,30 @@ async function EntrepreneurSummary({ session }: { session: Session }) {
         <ButtonLink href="/panel/formalizacion" variant="secondary">
           Ver mi ruta <ArrowRight className="size-4" />
         </ButtonLink>
+      </div>
+      <div className="grid gap-5 border-t border-ink-100 bg-ink-50/60 p-6 md:grid-cols-[auto_1fr] md:items-center">
+        {/* eslint-disable-next-line @next/next/no-img-element -- SVG dinámico generado por la app */}
+        <img
+          src={`/insignia/${business.slug}`}
+          alt={`Insignia de ${business.name}: nivel ${info.level}, ${info.name}`}
+          width={252}
+          height={108}
+          className="rounded-xl shadow-[var(--shadow-soft)]"
+        />
+        <div>
+          <p className="flex items-center gap-2 font-semibold text-ink-900">
+            Tu insignia <LevelBadge level={business.level} />
+          </p>
+          <p className="mt-1 text-sm text-ink-500">
+            Aparece en tu ficha y en la vitrina. Compártela en tus redes o imprímela para tu stand: se actualiza sola cuando subes de nivel.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <CopyButton text={`/insignia/${business.slug}`} label="Copiar enlace de la insignia" />
+            <ButtonLink href={`/insignia/${business.slug}`} variant="ghost" size="sm" target="_blank">
+              Abrir
+            </ButtonLink>
+          </div>
+        </div>
       </div>
     </Card>
   );
