@@ -8,6 +8,7 @@ Plataforma web para que los negocios del emporio comercial de **Gamarra** (galer
 
 | | |
 |---|---|
+| Versión | **1.0.0** · [release v1.0.0](https://github.com/matiolan/PC2-PFC_III/releases/tag/v1.0.0) · versión Jira «v1.0.0 Lanzamiento» |
 | Producción | https://pc2-pfc-iii.vercel.app |
 | Jira (Scrum) | [Tablero PFC](https://matiosystem.atlassian.net/jira/software/projects/PFC/boards/2/backlog) |
 | Arquitectura | [Diagramas](docs/arquitectura) · [ADR 0001](docs/adr/0001-stack.md) |
@@ -46,10 +47,12 @@ Next.js 16 (App Router, Server Actions) · React 19 · TypeScript · Tailwind CS
 | Workflow | Cuándo | Qué valida |
 |---|---|---|
 | **CI** | PR y push a `main`/`test` | ESLint · TypeScript · Vitest con umbrales de cobertura · `next build` |
-| **Seguridad** | PR, push y semanal | CodeQL (SAST) · Gitleaks (secretos) · Dependency Review y npm audit (SCA) |
+| **Seguridad** | PR, push y semanal | CodeQL (SAST) · Gitleaks (secretos) · Dependency Review y npm audit (SCA) · SBOM CycloneDX |
 | **Convenciones de PR** | PR | Rama `feature/PFC-xx-...` y título con clave Jira |
 | **Vercel** | Cada push | Preview por PR · Producción desde `main` |
-| **E2E y DAST** | Despliegue de producción, semanal y manual | Playwright (escritorio y móvil) · OWASP ZAP baseline |
+| **E2E y DAST** | Evento `vercel.deployment.success` de producción, semanal y manual | Playwright (escritorio y móvil) · OWASP ZAP baseline |
+
+Todas las acciones de terceros están fijadas por SHA de commit y Dependabot las mantiene actualizadas; cada job declara permisos mínimos del `GITHUB_TOKEN`.
 
 ## Ramas
 

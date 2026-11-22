@@ -1,7 +1,10 @@
 name: E2E y DAST
 
-# HU23: se ejecuta cuando Vercel termina un despliegue exitoso y también a demanda.
+# HU23: valida el sitio publicado. Se dispara cuando Vercel termina un despliegue de
+# producción (evento vercel.deployment.success o deployment_status), a demanda y cada semana.
 on:
+  repository_dispatch:
+    types: [vercel.deployment.success]
   deployment_status:
   workflow_dispatch:
     inputs:
@@ -15,21 +18,26 @@ on:
 permissions:
   contents: read
 
+env:
+  # Se prueba siempre el dominio público de producción: las URL únicas de cada
+  # despliegue pueden estar protegidas por Vercel Deployment Protection.
+  TARGET_URL: ${{ github.event.inputs.url || 'https://pc2-pfc-iii.vercel.app' }}
+  BASE_URL: ${{ github.event.inputs.url || 'https://pc2-pfc-iii.vercel.app' }}
+
 concurrency:
-  group: e2e-dast-${{ github.event.deployment_status.environment_url || github.event.inputs.url || 'prod' }}
-  cancel-in-progress: true
+  group: e2e-dast-${{ github.event.inputs.url || 'produccion' }}
+  cancel-in-progress: false
 
 jobs:
   e2e:
     name: E2E · Playwright
-    if: github.event_name != 'deployment_status' || (github.event.deployment_status.state == 'success' && github.event.deployment_status.environment == 'Production')
+    # Solo despliegues de producción (las vistas previas se validan en el PR).
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || (github.event_name == 'repository_dispatch' && github.event.client_payload.environment == 'production') || (github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success' && github.event.deployment_status.environment == 'Production')
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    env:
-      BASE_URL: ${{ github.event.deployment_status.environment_url || github.event.inputs.url || 'https://pc2-pfc-iii.vercel.app' }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
           cache: npm
@@ -37,7 +45,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Pruebas E2E contra ${{ env.BASE_URL }}
         run: npx playwright test
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: playwright-report
@@ -47,18 +55,17 @@ jobs:
   dast:
     name: DAST · OWASP ZAP
     needs: e2e
-    if: always() && (github.event_name != 'deployment_status' || (github.event.deployment_status.state == 'success' && github.event.deployment_status.environment == 'Production'))
+    if: always() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || (github.event_name == 'repository_dispatch' && github.event.client_payload.environment == 'production') || (github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success' && github.event.deployment_status.environment == 'Production'))
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
       contents: read
-      issues: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Escaneo pasivo (baseline)
-        uses: zaproxy/action-baseline@v0.14.0
+        uses: zaproxy/action-baseline@7c4deb10e6261301961c86d65d54a516394f9aed # v0.14.0
         with:
-          target: ${{ github.event.deployment_status.environment_url || github.event.inputs.url || 'https://pc2-pfc-iii.vercel.app' }}
+          target: ${{ env.TARGET_URL }}
           rules_file_name: .zap/rules.tsv
           cmd_options: "-a -j"
           allow_issue_writing: false
