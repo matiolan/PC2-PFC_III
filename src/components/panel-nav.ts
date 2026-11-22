@@ -4,7 +4,10 @@ export type NavItem = { href: string; label: string; icon: string };
 
 /** Menú del panel por rol. */
 export const PANEL_NAV: Record<Role, NavItem[]> = {
-  emprendedor: [{ href: "/panel", label: "Resumen", icon: "home" }],
+  emprendedor: [
+    { href: "/panel", label: "Resumen", icon: "home" },
+    { href: "/panel/negocio", label: "Mi negocio", icon: "store" },
+  ],
   trabajador: [
     { href: "/panel", label: "Resumen", icon: "home" },
     { href: "/empleos", label: "Buscar empleos", icon: "search" },
