@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800" font-family="Helvetica, Arial, sans-serif">
+  <rect width="600" height="800" fill="#f6f5f1"/>
+  <rect x="40" y="40" width="520" height="720" rx="16" fill="#fff" stroke="#dcdae3" stroke-width="2"/>
+  <rect x="40" y="40" width="520" height="90" rx="16" fill="#5130e0"/>
+  <rect x="40" y="110" width="520" height="20" fill="#5130e0"/>
+  <text x="70" y="95" fill="#fff" font-size="26" font-weight="700">Documento de demostración</text>
+  <text x="70" y="180" fill="#16141f" font-size="18" font-weight="700">Gamarra Conecta · Evidencia de formalización</text>
+  <text x="70" y="215" fill="#6b6779" font-size="15">Este registro pertenece a los datos de ejemplo del prototipo.</text>
+  <text x="70" y="240" fill="#6b6779" font-size="15">Los documentos reales que suben los emprendedores se abren</text>
+  <text x="70" y="265" fill="#6b6779" font-size="15">desde el almacenamiento privado con un enlace temporal.</text>
+  <g fill="#ecebf0">
+    <rect x="70" y="310" width="460" height="14" rx="7"/><rect x="70" y="340" width="400" height="14" rx="7"/>
+    <rect x="70" y="370" width="430" height="14" rx="7"/><rect x="70" y="400" width="300" height="14" rx="7"/>
+    <rect x="70" y="460" width="460" height="14" rx="7"/><rect x="70" y="490" width="380" height="14" rx="7"/>
+  </g>
+  <circle cx="440" cy="640" r="60" fill="none" stroke="#ff7a1a" stroke-width="4" stroke-dasharray="6 6"/>
+  <text x="440" y="636" fill="#ff7a1a" font-size="14" font-weight="700" text-anchor="middle">DEMO</text>
+  <text x="440" y="656" fill="#ff7a1a" font-size="12" text-anchor="middle">sin validez legal</text>
+</svg>
