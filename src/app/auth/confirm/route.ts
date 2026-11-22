@@ -1,23 +1,17 @@
 import { NextResponse, type NextRequest } from "next/server";
-import type { EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { safeNextPath } from "@/lib/validation";
 
-/** Verifica los enlaces de correo (confirmación de cuenta y recuperación de contraseña). */
+/**
+ * Verifica los enlaces de correo (confirmación de cuenta y recuperación de contraseña).
+ * Supabase usa el flujo PKCE: el enlace trae un `code` de un solo uso que se canjea por
+ * la sesión. Si el canje falla (código ausente, vencido o reutilizado) se rechaza.
+ */
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
   const next = safeNextPath(searchParams.get("next"));
-  const tokenHash = searchParams.get("token_hash");
-  const type = searchParams.get("type") as EmailOtpType | null;
-  const code = searchParams.get("code");
   const supabase = await createClient();
-
-  if (tokenHash && type) {
-    const { error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
-    if (!error) return NextResponse.redirect(new URL(next, origin));
-  } else if (code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(new URL(next, origin));
-  }
-  return NextResponse.redirect(new URL("/login?error=enlace", origin));
+  const { error } = await supabase.auth.exchangeCodeForSession(searchParams.get("code") ?? "");
+  const destination = error ? "/login?error=enlace" : next;
+  return NextResponse.redirect(new URL(destination, origin));
 }
