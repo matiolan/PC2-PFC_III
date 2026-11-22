@@ -167,3 +167,13 @@ export function rankByFormalization<T extends { level: number; created_at: strin
 export function formalizationPercent(level: number): number {
   return Math.round((Math.min(Math.max(level, 0), 4) / 4) * 100);
 }
+
+/** Limpia el texto de búsqueda para usarlo en un filtro ilike de PostgREST (sin comodines ni separadores). */
+export function sanitizeSearch(q: string | undefined | null): string {
+  return (q ?? "")
+    .normalize("NFC")
+    .replace(/[%_,()*\\:."']/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 60);
+}
