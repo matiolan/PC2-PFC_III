@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Alert, Card, PageHeader } from "@/components/ui";
 import { FormalizationRoute, type StepEvidence } from "@/components/formalization-route";
 import { EvidenceUploader } from "@/components/evidence-uploader";
+import { LevelBadge } from "@/components/level-badge";
 import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { formalizationPercent, levelInfo } from "@/lib/domain";
@@ -48,8 +49,8 @@ export default async function FormalizacionPage({ searchParams }: PageProps<"/pa
       <Card className="grid gap-5 p-5 sm:grid-cols-[1fr_auto] sm:items-center sm:p-6">
         <div>
           <p className="text-sm text-ink-500">Nivel actual</p>
-          <p className="text-2xl font-semibold text-ink-900">
-            {current.level} · {current.name}
+          <p className="flex flex-wrap items-center gap-3 text-2xl font-semibold text-ink-900">
+            {current.level} · {current.name} <LevelBadge level={business.level} size="md" />
           </p>
           <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-ink-100" role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100} aria-label="Avance de formalización">
             <div className="h-full rounded-full bg-gradient-to-r from-brand-500 to-saffron-500" style={{ width: `${percent}%` }} />
