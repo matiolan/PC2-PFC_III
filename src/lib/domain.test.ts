@@ -8,6 +8,7 @@ import {
   levelInfo,
   minimumSalary,
   rankByFormalization,
+  sanitizeSearch,
   slugify,
   whatsappUrl,
 } from "./domain";
@@ -84,5 +85,16 @@ describe("niveles de formalización", () => {
     expect(formalizationPercent(0)).toBe(0);
     expect(formalizationPercent(2)).toBe(50);
     expect(formalizationPercent(4)).toBe(100);
+  });
+});
+
+describe("búsqueda en la vitrina (HU10)", () => {
+  it("quita comodines y separadores que alterarían el filtro", () => {
+    expect(sanitizeSearch("polo%,name.eq.x)")).toBe("polo name eq x");
+    expect(sanitizeSearch("  jean   stretch ")).toBe("jean stretch");
+    expect(sanitizeSearch(undefined)).toBe("");
+  });
+  it("limita la longitud", () => {
+    expect(sanitizeSearch("a".repeat(100)).length).toBe(60);
   });
 });
