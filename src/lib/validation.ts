@@ -142,3 +142,50 @@ export const reviewSchema = z
     path: ["note"],
     message: "Explica el motivo de la observación (mínimo 5 caracteres)",
   });
+
+export const PRODUCT_IMAGE_MAX_BYTES = 2 * 1024 * 1024;
+export const PRODUCT_IMAGE_TYPES = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" } as const;
+
+export function validateProductImage(file: { type: string; size: number }): string | null {
+  if (!(file.type in PRODUCT_IMAGE_TYPES)) return "Usa una foto JPG, PNG o WEBP.";
+  if (file.size > PRODUCT_IMAGE_MAX_BYTES) return "La foto supera los 2 MB.";
+  return null;
+}
+
+const price = (label: string) =>
+  z.coerce
+    .number(`Ingresa el ${label}`)
+    .positive(`El ${label} debe ser mayor a 0`)
+    .max(99999, `El ${label} es demasiado alto`)
+    .transform((v) => Math.round(v * 100) / 100);
+
+/** HU09: producto con precio por unidad y por docena. */
+export const productSchema = z
+  .object({
+    name: z.string().trim().min(3, "Escribe el nombre del producto").max(80),
+    category: z.enum(CATEGORIES, "Elige una categoría"),
+    description: optionalText(400),
+    price_unit: price("precio por unidad"),
+    price_dozen: price("precio por docena"),
+    min_order: z.coerce.number().int("Usa un número entero").min(1, "Mínimo 1").max(10000),
+    image_url: z
+      .string()
+      .trim()
+      .optional()
+      .transform((v) => (v ? v : null))
+      .refine(
+        (v) =>
+          v === null ||
+          /^\/productos\/[a-z]+\.svg$/.test(v) ||
+          /^https:\/\/[a-z0-9]+\.supabase\.co\/storage\/v1\/object\/public\/productos\/[0-9a-f-]{36}\/[0-9a-f-]{36}\.(jpg|png|webp)$/.test(v),
+        "Imagen no permitida",
+      ),
+    active: z
+      .string()
+      .optional()
+      .transform((v) => v === "on" || v === "true"),
+  })
+  .refine((v) => v.price_dozen <= v.price_unit * 12, {
+    path: ["price_dozen"],
+    message: "La docena no puede costar más que 12 unidades sueltas",
+  });

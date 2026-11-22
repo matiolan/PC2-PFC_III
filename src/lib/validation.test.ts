@@ -3,6 +3,8 @@ import {
   businessSchema,
   evidenceSchema,
   reviewSchema,
+  productSchema,
+  validateProductImage,
   validateEvidenceFile,
   fieldErrors,
   formValues,
@@ -128,5 +130,34 @@ describe("verificación del gestor (HU07)", () => {
   });
   it("rechaza identificadores inválidos", () => {
     expect(reviewSchema.safeParse({ id: "1 or 1=1", decision: "aprobada" }).success).toBe(false);
+  });
+});
+
+describe("productos por mayor (HU09)", () => {
+  const ok = { name: "Polo pima", category: "Damas", price_unit: "18", price_dozen: "180", min_order: "12", active: "on" };
+  it("acepta precios válidos y convierte a número", () => {
+    const r = productSchema.safeParse(ok);
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect(r.data.price_unit).toBe(18);
+      expect(r.data.active).toBe(true);
+    }
+  });
+  it("la docena no puede costar más que 12 unidades", () => {
+    expect(productSchema.safeParse({ ...ok, price_dozen: "250" }).success).toBe(false);
+  });
+  it("rechaza precios cero o negativos", () => {
+    expect(productSchema.safeParse({ ...ok, price_unit: "0" }).success).toBe(false);
+    expect(productSchema.safeParse({ ...ok, price_unit: "-5" }).success).toBe(false);
+  });
+  it("solo admite imágenes propias de la plataforma", () => {
+    expect(productSchema.safeParse({ ...ok, image_url: "/productos/polo.svg" }).success).toBe(true);
+    expect(productSchema.safeParse({ ...ok, image_url: "https://malicioso.com/x.png" }).success).toBe(false);
+    expect(productSchema.safeParse({ ...ok, image_url: "javascript:alert(1)" }).success).toBe(false);
+  });
+  it("valida la foto del producto", () => {
+    expect(validateProductImage({ type: "image/webp", size: 1000 })).toBeNull();
+    expect(validateProductImage({ type: "image/gif", size: 1000 })).not.toBeNull();
+    expect(validateProductImage({ type: "image/png", size: 3 * 1024 * 1024 })).not.toBeNull();
   });
 });

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 360" width="400" height="360">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#93c5fd" stop-opacity=".35"/><stop offset="1" stop-color="#f6f5f1"/></linearGradient>
+<linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d4ed8"/><stop offset="1" stop-color="#1d4ed8" stop-opacity=".82"/></linearGradient>
+<pattern id="w" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 8L8 0" stroke="#fff" stroke-opacity=".12" stroke-width="2"/></pattern></defs>
+<rect width="400" height="360" fill="url(#bg)"/>
+<circle cx="330" cy="60" r="70" fill="#93c5fd" opacity=".35"/>
+<ellipse cx="200" cy="318" rx="120" ry="12" fill="#16141f" opacity=".08"/>
+<g transform="translate(0 0)"><path d="M130 60 L270 60 L285 300 L215 300 L200 140 L185 300 L115 300 Z" fill="url(#g)" stroke="#1d4ed8" stroke-width="3" stroke-linejoin="round"/>
+<path d="M130 60 L270 60 L285 300 L215 300 L200 140 L185 300 L115 300 Z" fill="url(#w)"/>
+<path d="M130 80 L270 80" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 6"/></g>
+</svg>
