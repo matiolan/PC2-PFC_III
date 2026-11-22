@@ -212,3 +212,34 @@ export function describeAudit(action: string, details: Record<string, unknown>):
   if (action.startsWith("oferta_")) return `${details.titulo ?? ""}${details.sueldo ? ` · S/ ${details.sueldo}` : ""}`;
   return "";
 }
+
+export type GestorStats = {
+  total: number;
+  por_nivel: Record<string, number>;
+  por_ubicacion: { galeria: number; via_publica: number };
+  por_galeria: { galeria: string; negocios: number; formalizados: number; nivel_promedio: number }[];
+  evidencias_pendientes: number;
+  evidencias_aprobadas: number;
+  evidencias_observadas: number;
+  horas_promedio_revision: number;
+  ofertas_abiertas: number;
+  vacantes: number;
+  postulaciones: number;
+  seleccionados: number;
+  sueldo_promedio: number;
+  rmv: number;
+};
+
+/** HU17: indicadores derivados para el panel del gestor. */
+export function deriveKpis(s: GestorStats) {
+  const formalizados = [2, 3, 4].reduce((acc, l) => acc + (s.por_nivel[String(l)] ?? 0), 0);
+  const pct = (n: number, d: number) => (d > 0 ? Math.round((n / d) * 1000) / 10 : 0);
+  return {
+    formalizados,
+    tasaFormalizacion: pct(formalizados, s.total),
+    tasaAprobacion: pct(s.evidencias_aprobadas, s.evidencias_aprobadas + s.evidencias_observadas),
+    sueldoSobreRmv: s.rmv > 0 ? Math.round(((s.sueldo_promedio - s.rmv) / s.rmv) * 1000) / 10 : 0,
+    tasaColocacion: pct(s.seleccionados, s.postulaciones),
+    revisionEnPlazo: s.horas_promedio_revision <= 48,
+  };
+}
