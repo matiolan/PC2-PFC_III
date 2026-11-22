@@ -4,6 +4,9 @@ import {
   evidenceSchema,
   reviewSchema,
   productSchema,
+  offerSchema,
+  applicationSchema,
+  applicationStatusSchema,
   validateProductImage,
   validateEvidenceFile,
   fieldErrors,
@@ -159,5 +162,46 @@ describe("productos por mayor (HU09)", () => {
     expect(validateProductImage({ type: "image/webp", size: 1000 })).toBeNull();
     expect(validateProductImage({ type: "image/gif", size: 1000 })).not.toBeNull();
     expect(validateProductImage({ type: "image/png", size: 3 * 1024 * 1024 })).not.toBeNull();
+  });
+});
+
+describe("ofertas de empleo (HU14)", () => {
+  const schema = offerSchema(1230);
+  const ok = {
+    title: "Operaria de remalladora",
+    description: "Confección de polos en máquina remalladora con experiencia.",
+    contract_type: "Plazo indeterminado",
+    salary: "1500",
+    schedule: "Lunes a sábado 8 a 17",
+    vacancies: "2",
+  };
+  it("acepta un sueldo mayor o igual a la RMV", () => {
+    expect(schema.safeParse(ok).success).toBe(true);
+    expect(schema.safeParse({ ...ok, salary: "1230" }).success).toBe(true);
+  });
+  it("rechaza un sueldo menor a la RMV", () => {
+    const r = schema.safeParse({ ...ok, salary: "1100" });
+    expect(r.success).toBe(false);
+    if (!r.success) expect(r.error.issues[0].message).toMatch(/1230/);
+  });
+  it("a tiempo parcial exige al menos la mitad de la RMV", () => {
+    expect(schema.safeParse({ ...ok, contract_type: "Tiempo parcial", salary: "615" }).success).toBe(true);
+    expect(schema.safeParse({ ...ok, contract_type: "Tiempo parcial", salary: "500" }).success).toBe(false);
+  });
+  it("usa la RMV configurada", () => {
+    expect(offerSchema(1300).safeParse({ ...ok, salary: "1250" }).success).toBe(false);
+  });
+});
+
+describe("postulaciones (HU15 y HU16)", () => {
+  it("exige celular válido", () => {
+    const id = "d1000000-0000-4000-8000-000000000001";
+    expect(applicationSchema.safeParse({ offer_id: id, phone: "987 100 200" }).success).toBe(true);
+    expect(applicationSchema.safeParse({ offer_id: id, phone: "123" }).success).toBe(false);
+  });
+  it("solo permite estados válidos", () => {
+    const id = "d1000000-0000-4000-8000-000000000001";
+    expect(applicationStatusSchema.safeParse({ id, status: "seleccionada" }).success).toBe(true);
+    expect(applicationStatusSchema.safeParse({ id, status: "aprobada" }).success).toBe(false);
   });
 });

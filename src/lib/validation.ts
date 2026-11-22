@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CATEGORIES, SELF_SERVICE_ROLES } from "@/lib/domain";
+import { CATEGORIES, CONTRACT_TYPES, minimumSalary, SELF_SERVICE_ROLES } from "@/lib/domain";
 
 /** Resultado estándar de una Server Action para formularios con useActionState. */
 export type FormState = {
@@ -189,3 +189,42 @@ export const productSchema = z
     path: ["price_dozen"],
     message: "La docena no puede costar más que 12 unidades sueltas",
   });
+
+/** HU14: oferta de empleo formal; el sueldo no puede ser menor a la RMV vigente. */
+export function offerSchema(rmv: number) {
+  return z
+    .object({
+      title: z.string().trim().min(5, "Escribe el puesto (mínimo 5 caracteres)").max(80),
+      description: z.string().trim().min(20, "Describe las funciones (mínimo 20 caracteres)").max(1000),
+      contract_type: z.enum(CONTRACT_TYPES, "Elige el tipo de contrato"),
+      salary: z.coerce.number("Ingresa el sueldo").positive("Ingresa el sueldo").max(50000),
+      schedule: z.string().trim().min(3, "Indica el horario").max(80),
+      vacancies: z.coerce.number().int().min(1, "Mínimo 1 vacante").max(50),
+    })
+    .superRefine((v, ctx) => {
+      const min = minimumSalary(v.contract_type, rmv);
+      if (v.salary < min)
+        ctx.addIssue({
+          code: "custom",
+          path: ["salary"],
+          message: `El sueldo no puede ser menor a S/ ${min.toFixed(2)} (${v.contract_type === "Tiempo parcial" ? "mitad de la RMV" : "RMV vigente"})`,
+        });
+    });
+}
+
+/** HU15: postulación del trabajador. */
+export const applicationSchema = z.object({
+  offer_id: z.uuid("Oferta inválida"),
+  message: z.string().trim().max(500, "Máximo 500 caracteres").optional().default(""),
+  phone: z
+    .string()
+    .trim()
+    .transform((v) => v.replace(/\s|-/g, "").replace(/^\+?51/, ""))
+    .pipe(z.string().regex(/^9\d{8}$/, "Usa un celular peruano de 9 dígitos")),
+});
+
+/** HU16: estado de una postulación. */
+export const applicationStatusSchema = z.object({
+  id: z.uuid(),
+  status: z.enum(["en_revision", "seleccionada", "descartada"]),
+});
