@@ -14,6 +14,7 @@ export const PANEL_NAV: Record<Role, NavItem[]> = {
   trabajador: [
     { href: "/panel", label: "Resumen", icon: "home" },
     { href: "/empleos", label: "Buscar empleos", icon: "search" },
+    { href: "/panel/postulaciones", label: "Mis postulaciones", icon: "briefcase" },
   ],
   comprador: [
     { href: "/panel", label: "Resumen", icon: "home" },
