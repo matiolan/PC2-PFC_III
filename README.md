@@ -17,7 +17,7 @@ Prototipo de la **Práctica Calificada 2** — Next.js + Supabase + Vercel, con 
 
 | Workflow | Cuándo | Qué valida |
 |---|---|---|
-| **CI** | PR y push a `main`/`develop` | ESLint · TypeScript · Vitest + cobertura · `next build` |
+| **CI** | PR y push a `main`/`test` | ESLint · TypeScript · Vitest + cobertura · `next build` |
 | **Seguridad** | PR, push y semanal | CodeQL (SAST) · Gitleaks · Dependency Review · npm audit |
 | **Convenciones de PR** | PR | Rama `feature/PFC-xx-...` y título con clave Jira |
 | **Vercel** | Cada push | Preview por PR · Producción desde `main` |
