@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Briefcase, Building2, Check, MapPin, Package } from "lucide-react";
 import { Card, EmptyState } from "@/components/ui";
 import { LevelBadge } from "@/components/level-badge";
+import { QuoteButton } from "@/components/quote-button";
 import { ProductCard, type ProductCardData } from "@/components/product-card";
 import { createClient } from "@/lib/supabase/server";
 import { formatSoles, LEVELS } from "@/lib/domain";
@@ -50,7 +51,7 @@ export default async function NegocioPublicoPage({ params }: PageProps<"/negocio
       : `Vía pública · ${business.zone}`;
   const cards: ProductCardData[] = (products ?? []).map((p) => ({
     ...p,
-    business: { name: business.name, slug: business.slug, level: business.level, place },
+    business: { name: business.name, slug: business.slug, level: business.level, place, whatsapp: business.whatsapp },
   }));
   const since = new Intl.DateTimeFormat("es-PE", { month: "long", year: "numeric" }).format(new Date(business.created_at));
 
@@ -79,7 +80,10 @@ export default async function NegocioPublicoPage({ params }: PageProps<"/negocio
               {business.galleries?.address && <span className="text-ink-500">{business.galleries.address}</span>}
               <span className="text-ink-500">En Gamarra Conecta desde {since}</span>
             </div>
-            <div id="contacto" className="mt-6" />
+            <div id="contacto" className="mt-6 flex flex-wrap items-center gap-3">
+              <QuoteButton businessName={business.name} whatsapp={business.whatsapp} />
+              <span className="text-xs text-ink-500">Respuesta directa del negocio, sin intermediarios.</span>
+            </div>
           </div>
         </Card>
 
