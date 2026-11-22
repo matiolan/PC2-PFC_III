@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
+import { versionLabel } from "@/lib/version";
 
 export function SiteFooter() {
   return (
@@ -14,6 +15,9 @@ export function SiteFooter() {
           <p className="mt-4 text-xs text-white/40">
             Prototipo académico · PC2 Proyecto Final de Carrera III · USIL 2026. Datos de demostración; la validación
             ante SUNAT y la municipalidad es simulada.
+          </p>
+          <p className="mt-2 text-xs text-white/40">
+            Versión <span className="font-mono text-white/60">{versionLabel()}</span>
           </p>
         </div>
         <div>
