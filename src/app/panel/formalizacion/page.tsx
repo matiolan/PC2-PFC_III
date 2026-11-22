@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Alert, Card, PageHeader } from "@/components/ui";
 import { FormalizationRoute, type StepEvidence } from "@/components/formalization-route";
+import { EvidenceUploader } from "@/components/evidence-uploader";
 import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { formalizationPercent, levelInfo } from "@/lib/domain";
@@ -56,7 +57,15 @@ export default async function FormalizacionPage({ searchParams }: PageProps<"/pa
         </div>
         <p className="text-4xl font-bold tracking-tight text-brand-700">{percent}%</p>
       </Card>
-      <FormalizationRoute level={business.level} evidenceByLevel={byLevel} />
+      <FormalizationRoute
+        level={business.level}
+        evidenceByLevel={byLevel}
+        nextStepSlot={
+          business.level < 4 && byLevel[business.level + 1]?.status !== "pendiente" ? (
+            <EvidenceUploader userId={session.userId} level={business.level + 1} />
+          ) : null
+        }
+      />
     </div>
   );
 }
