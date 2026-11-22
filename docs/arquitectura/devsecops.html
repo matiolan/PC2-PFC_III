@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1600px;height:560px;background:#fff;font-family:"DM Sans",sans-serif;color:#0f172a;padding:26px 28px}
+.top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px}
+.top .k{font-size:13px;color:#475569}
+.band{display:flex;gap:8px;margin-bottom:10px}
+.band div{flex:1;text-align:center;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px;border-radius:8px}
+.dev{background:#e0e7ff;color:#3730a3}.ops{background:#dcfce7;color:#166534}
+.phases{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
+.ph{border-radius:12px;border:1.5px solid #cbd5e1;background:#f8fafc;padding:10px 10px 12px;position:relative;min-height:290px}
+.ph h4{font-size:16px;margin-bottom:2px}
+.ph .en{font-size:11.5px;color:#64748b;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+.t{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:6px 8px;font-size:12.5px;line-height:1.3;margin-bottom:6px}
+.t b{display:block;font-size:13px}
+.sec{background:#fff1f2;border-color:#fda4af}
+.sec b{color:#9f1239}
+.ph:after{content:"›";position:absolute;right:-9px;top:44%;font-size:26px;color:#94a3b8;z-index:3}
+.ph:last-child:after{content:""}
+.n{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:#0f172a;color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center}
+.shift{margin-top:14px;position:relative;height:64px}
+.bar{position:absolute;left:0;right:0;top:20px;height:14px;border-radius:7px;background:linear-gradient(90deg,#be123c,#fb7185 45%,#fecdd3 75%,#f1f5f9)}
+.shift span{position:absolute;top:40px;font-size:13px;color:#334155}
+.shift .lt{left:0;top:0;font-weight:700;color:#9f1239}
+.shift .rt{right:0;top:0;color:#64748b}
+.leg{display:flex;gap:18px;font-size:12.5px;color:#475569;margin-top:6px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+</style></head><body>
+<div class="top"><div class="k">Cada fase indica la herramienta usada en Gamarra Conecta. Los recuadros rojos son controles de seguridad automáticos o de proceso.</div></div>
+<div class="band"><div class="dev">Desarrollo (Dev)</div><div class="ops">Operación (Ops)</div></div>
+<div class="phases">
+ <div class="ph"><span class="n">1</span><h4>Planificar</h4><div class="en">Plan</div>
+  <div class="t"><b>Jira Scrum</b>Épicas, historias, sprints, Kanban con WIP</div>
+  <div class="t sec"><b>Requisitos de seguridad</b>Criterios de seguridad en cada historia</div>
+  <div class="t sec"><b>Modelado de amenazas</b>STRIDE ligero por épica</div></div>
+ <div class="ph"><span class="n">2</span><h4>Codificar</h4><div class="en">Code</div>
+  <div class="t"><b>VS Code + TypeScript</b>Tipado estricto</div>
+  <div class="t"><b>ESLint</b>Cero advertencias</div>
+  <div class="t sec"><b>Ramas protegidas</b>PR obligatorio y revisión</div>
+  <div class="t sec"><b>Zod</b>Validación de entradas en servidor</div></div>
+ <div class="ph"><span class="n">3</span><h4>Construir</h4><div class="en">Build</div>
+  <div class="t"><b>GitHub Actions · CI</b>npm ci, typegen, tsc, next build</div>
+  <div class="t sec"><b>CodeQL</b>SAST security-extended</div>
+  <div class="t sec"><b>Gitleaks</b>Secretos en el historial</div></div>
+ <div class="ph"><span class="n">4</span><h4>Probar</h4><div class="en">Test</div>
+  <div class="t"><b>Vitest + Testing Library</b>Pruebas unitarias con cobertura</div>
+  <div class="t"><b>Playwright</b>Pruebas E2E de los flujos críticos</div>
+  <div class="t sec"><b>Dependency Review y npm audit</b>SCA, bloquea severidad alta</div></div>
+ <div class="ph"><span class="n">5</span><h4>Liberar</h4><div class="en">Release</div>
+  <div class="t"><b>PR test → main</b>Checks obligatorios en verde</div>
+  <div class="t"><b>Versionado</b>Hito v1.0 en Jira</div>
+  <div class="t sec"><b>Revisión de PR</b>Plantilla con lista de seguridad</div></div>
+ <div class="ph"><span class="n">6</span><h4>Desplegar</h4><div class="en">Deploy</div>
+  <div class="t"><b>Vercel</b>Preview por PR y producción desde main</div>
+  <div class="t sec"><b>Variables cifradas</b>Claves fuera del código</div>
+  <div class="t sec"><b>Migraciones Supabase</b>RLS y permisos versionados</div></div>
+ <div class="ph"><span class="n">7</span><h4>Operar</h4><div class="en">Operate</div>
+  <div class="t"><b>Vercel + Supabase</b>Servicios gestionados, TLS y copias</div>
+  <div class="t sec"><b>Cabeceras y firewall</b>CSP, HSTS, mitigación DDoS</div>
+  <div class="t sec"><b>Auditoría</b>Registro de verificaciones</div></div>
+ <div class="ph"><span class="n">8</span><h4>Monitorear</h4><div class="en">Monitor</div>
+  <div class="t"><b>Logs y Speed Insights</b>Errores y rendimiento</div>
+  <div class="t sec"><b>OWASP ZAP</b>DAST sobre la URL pública</div>
+  <div class="t sec"><b>Dependabot y asesor Supabase</b>Alertas continuas</div></div>
+</div>
+<div class="shift"><span class="lt">← Shift-left: la seguridad se valida lo antes posible</span><div class="bar"></div><span class="rt">Costo de corregir un defecto aumenta →</span></div>
+<div class="leg"><span><i class="sw" style="background:#fff1f2;border:1px solid #fda4af"></i>Control de seguridad</span><span><i class="sw" style="background:#fff;border:1px solid #e2e8f0"></i>Herramienta del ciclo</span></div>
+</body></html>

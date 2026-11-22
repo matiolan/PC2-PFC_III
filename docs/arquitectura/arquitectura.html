@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1600px;height:975px;background:#fff;font-family:"DM Sans",sans-serif;color:#0f172a;padding:28px 32px}
+.wrap{display:grid;grid-template-columns:1fr 300px;gap:22px;height:100%}
+.main{display:flex;flex-direction:column;gap:14px}
+.layer{border-radius:14px;padding:14px 16px 16px;position:relative}
+.layer h3{font-size:15px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.layer h3 span.t{font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;opacity:.75}
+.row{display:flex;gap:10px}
+.box{flex:1;background:#fff;border-radius:10px;padding:10px 12px;border:1.5px solid;font-size:13.5px;line-height:1.35}
+.box b{display:block;font-size:14.5px;margin-bottom:3px}
+.l1{background:#eef2ff;border:1.5px solid #c7d2fe}.l1 h3{color:#3730a3}.l1 .box{border-color:#a5b4fc}
+.l2{background:#ecfeff;border:1.5px solid #a5f3fc}.l2 h3{color:#155e75}.l2 .box{border-color:#67e8f9}
+.l3{background:#f0fdf4;border:1.5px solid #bbf7d0}.l3 h3{color:#166534}.l3 .box{border-color:#86efac}
+.l4{background:#fefce8;border:1.5px solid #fde68a}.l4 h3{color:#854d0e}.l4 .box{border-color:#fcd34d}
+.l5{background:#f8fafc;border:1.5px dashed #94a3b8}.l5 h3{color:#334155}.l5 .box{border-color:#cbd5e1;border-style:dashed}
+.arrow{height:18px;display:flex;justify-content:center;align-items:center;margin:-8px 0;font-size:12px;color:#475569;gap:8px}
+.arrow:before{content:"";width:2px;height:18px;background:#64748b}
+.mods{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+.mod{background:#dcfce7;border-radius:8px;padding:7px 8px;font-size:12.5px;text-align:center;font-weight:600;color:#14532d}
+.mod small{display:block;font-weight:400;color:#166534;font-size:11.5px}
+.side{background:#fff1f2;border:1.5px solid #fecdd3;border-radius:14px;padding:14px 14px}
+.side h3{font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:#9f1239;margin-bottom:12px}
+.step{background:#fff;border:1.5px solid #fda4af;border-radius:10px;padding:9px 11px;font-size:13px;line-height:1.35;margin-bottom:6px}
+.step b{display:block;font-size:14px;color:#881337}
+.dn{text-align:center;color:#be123c;font-size:16px;line-height:1;margin:-1px 0 5px}
+.legend{margin-top:10px;font-size:12px;color:#475569;line-height:1.5}
+.pill{display:inline-block;background:#e2e8f0;border-radius:99px;padding:1px 8px;font-size:11.5px;margin:2px 2px 0 0;color:#334155}
+</style></head><body>
+<div class="wrap">
+ <div class="main">
+  <div class="layer l1"><h3>1 · Capa de presentación <span class="t">Navegador web (escritorio y móvil)</span></h3>
+   <div class="row">
+    <div class="box"><b>Visitante</b>Landing animada, directorio de galerías, indicadores públicos</div>
+    <div class="box"><b>Comprador</b>Vitrina mayorista, búsqueda, ficha del negocio, cotización</div>
+    <div class="box"><b>Emprendedor</b>Negocio, ruta de formalización, productos, ofertas de empleo</div>
+    <div class="box"><b>Trabajador</b>Búsqueda de ofertas y postulación</div>
+    <div class="box"><b>Gestor de galería</b>Verificación de evidencias, indicadores, auditoría, CSV</div>
+   </div></div>
+  <div class="arrow">HTTPS · TLS 1.3</div>
+  <div class="layer l2"><h3>2 · Capa de borde <span class="t">Vercel Edge Network</span></h3>
+   <div class="row">
+    <div class="box"><b>CDN y TLS</b>Activos estáticos en caché, certificado gestionado, HSTS</div>
+    <div class="box"><b>Proxy de sesión (proxy.ts)</b>Refresca la sesión de Supabase y bloquea rutas privadas sin autenticación</div>
+    <div class="box"><b>Cabeceras de seguridad</b>CSP, X-Frame-Options DENY, nosniff, Referrer y Permissions-Policy</div>
+    <div class="box"><b>Firewall de Vercel</b>Mitigación DDoS y límite de peticiones</div>
+   </div></div>
+  <div class="arrow">Peticiones validadas</div>
+  <div class="layer l3"><h3>3 · Capa de aplicación <span class="t">Next.js 16 (App Router) en Vercel Functions · TypeScript</span></h3>
+   <div class="row">
+    <div class="box"><b>Server Components</b>Renderizan las vistas en el servidor; la clave de servicio nunca llega al navegador</div>
+    <div class="box"><b>Server Actions</b>Mutaciones con validación Zod, verificación de rol y mensajes de error claros</div>
+    <div class="box"><b>Route Handlers</b>Exportación CSV de indicadores y comprobación de salud (/api/health)</div>
+    <div class="box"><b>Client Components</b>Animaciones con Motion, formularios con retroalimentación inmediata</div>
+   </div>
+   <div class="mods">
+    <div class="mod">Identidad y roles<small>E1</small></div>
+    <div class="mod">Formalización<small>E2</small></div>
+    <div class="mod">Vitrina mayorista<small>E3</small></div>
+    <div class="mod">Bolsa de empleo<small>E4</small></div>
+    <div class="mod">Indicadores<small>E5 · E6</small></div>
+   </div></div>
+  <div class="arrow">supabase-js (SSR) · JWT del usuario</div>
+  <div class="layer l4"><h3>4 · Capa de datos <span class="t">Supabase (PostgreSQL 17 · región us-east-1)</span></h3>
+   <div class="row">
+    <div class="box"><b>Supabase Auth</b>Correo y contraseña, recuperación, JWT en cookies httpOnly</div>
+    <div class="box"><b>PostgreSQL + RLS</b>Políticas por fila según dueño y rol; permisos explícitos por tabla</div>
+    <div class="box"><b>Storage privado</b>Bucket de evidencias; acceso solo con URL firmadas de corta duración</div>
+    <div class="box"><b>Funciones y triggers</b>Nivel de formalización, auditoría automática, vista de indicadores</div>
+   </div></div>
+  <div class="arrow">Integraciones</div>
+  <div class="layer l5"><h3>5 · Servicios externos <span class="t">Fuera del sistema</span></h3>
+   <div class="row">
+    <div class="box"><b>WhatsApp</b>Enlace wa.me con mensaje de cotización prellenado (sin API ni datos almacenados)</div>
+    <div class="box"><b>SUNAT y municipalidad</b>Validación de RUC y licencia simulada por formato; integración real fuera del alcance (Won't)</div>
+   </div></div>
+ </div>
+ <div class="side"><h3>Cadena DevSecOps</h3>
+  <div class="step"><b>Jira</b>Backlog, sprints, tablero Kanban con límites WIP</div><div class="dn">▼</div>
+  <div class="step"><b>GitHub</b>Ramas main y test protegidas; feature/PFC-xx; PR con revisión</div><div class="dn">▼</div>
+  <div class="step"><b>GitHub Actions · CI</b>Lint, tipos, pruebas con cobertura, build</div><div class="dn">▼</div>
+  <div class="step"><b>GitHub Actions · Seguridad</b>CodeQL (SAST), Gitleaks (secretos), Dependency Review y npm audit (SCA)</div><div class="dn">▼</div>
+  <div class="step"><b>Vercel</b>Preview por PR (test) y producción desde main</div><div class="dn">▼</div>
+  <div class="step"><b>Pruebas sobre el despliegue</b>Playwright (E2E) y OWASP ZAP (DAST)</div><div class="dn">▼</div>
+  <div class="step"><b>Operación y monitoreo</b>Logs de Vercel, Speed Insights, asesor de seguridad de Supabase, Dependabot</div>
+  <div class="legend">Controles transversales:<br><span class="pill">Mínimo privilegio</span><span class="pill">Secretos en variables cifradas</span><span class="pill">Auditoría</span><span class="pill">Validación en servidor</span></div>
+ </div>
+</div>
+</body></html>

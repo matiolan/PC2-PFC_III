@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1600px;height:1000px;background:#fff;font-family:"DM Sans",sans-serif;color:#0f172a;position:relative}
+.e{position:absolute;width:330px;border:1.5px solid #334155;border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 2px 0 #e2e8f0;z-index:2}
+.e h4{font-size:15px;padding:7px 12px;color:#fff;display:flex;justify-content:space-between}
+.e h4 small{font-weight:400;opacity:.85;font-size:12px}
+.e ul{list-style:none;font-size:12.5px;font-family:"DejaVu Sans Mono",monospace}
+.e li{padding:3px 12px;border-top:1px solid #f1f5f9;display:flex;justify-content:space-between;gap:8px}
+.e li span:last-child{color:#64748b;text-align:right}
+.pk{font-weight:700}.fk{color:#7c3aed}
+.c1 h4{background:#475569}.c2 h4{background:#4f46e5}.c3 h4{background:#0e7490}.c4 h4{background:#15803d}.c5 h4{background:#b45309}.c6 h4{background:#be123c}
+svg{position:absolute;inset:0;z-index:1}
+.lbl{font:600 13px "DM Sans";fill:#334155}
+.note{position:absolute;right:24px;bottom:18px;font-size:12.5px;color:#475569;width:330px;line-height:1.45}
+.note b{color:#0f172a}
+</style></head><body>
+<svg id="s" width="1600" height="1000"></svg>
+
+<div class="e c1" id="users" style="left:24px;top:24px"><h4>auth.users <small>Supabase Auth</small></h4><ul>
+<li><span class="pk">id</span><span>uuid PK</span></li><li><span>email</span><span>text</span></li><li><span>encrypted_password</span><span>bcrypt</span></li></ul></div>
+
+<div class="e c2" id="profiles" style="left:24px;top:200px"><h4>profiles <small>RLS</small></h4><ul>
+<li><span class="pk fk">id</span><span>uuid PK, FK users</span></li><li><span>full_name</span><span>text ≤ 120</span></li>
+<li><span>role</span><span>comprador | emprendedor | trabajador | gestor</span></li><li><span>phone</span><span>text</span></li>
+<li><span class="fk">gallery_id</span><span>FK (solo gestor)</span></li><li><span>created_at</span><span>timestamptz</span></li></ul></div>
+
+<div class="e c3" id="galleries" style="left:470px;top:24px"><h4>galleries <small>RLS · lectura pública</small></h4><ul>
+<li><span class="pk">id</span><span>uuid PK</span></li><li><span>name / slug</span><span>text único</span></li><li><span>address</span><span>text</span></li><li><span>floors</span><span>int</span></li></ul></div>
+
+<div class="e c3" id="businesses" style="left:470px;top:250px"><h4>businesses <small>RLS · dueño</small></h4><ul>
+<li><span class="pk">id</span><span>uuid PK</span></li><li><span class="fk">owner_id</span><span>FK profiles</span></li>
+<li><span>name / slug</span><span>text</span></li><li><span>category</span><span>text</span></li>
+<li><span>location_type</span><span>galeria | via_publica</span></li><li><span class="fk">gallery_id</span><span>FK, nulo en vía pública</span></li>
+<li><span>floor / stand / zone</span><span>text</span></li><li><span>whatsapp</span><span>9 dígitos</span></li>
+<li><span>level</span><span>0 a 4 (por trigger)</span></li></ul></div>
+
+<div class="e c4" id="evidence" style="left:920px;top:24px"><h4>formalization_evidence <small>RLS</small></h4><ul>
+<li><span class="pk">id</span><span>uuid PK</span></li><li><span class="fk">business_id</span><span>FK businesses</span></li>
+<li><span>level</span><span>1 a 4</span></li><li><span>doc_type / doc_number</span><span>dni | ruc | licencia | planilla</span></li>
+<li><span>file_path</span><span>Storage privado</span></li><li><span>status</span><span>pendiente | aprobada | observada</span></li>
+<li><span class="fk">reviewer_id</span><span>FK profiles (gestor)</span></li><li><span>review_note / reviewed_at</span><span></span></li></ul></div>
+
+<div class="e c4" id="products" style="left:920px;top:330px"><h4>products <small>RLS · lectura pública</small></h4><ul>
+<li><span class="pk">id</span><span>uuid PK</span></li><li><span class="fk">business_id</span><span>FK businesses</span></li>
+<li><span>name / category</span><span>text</span></li><li><span>price_unit</span><span>numeric &gt; 0</span></li>
+<li><span>price_dozen</span><span>numeric &gt; 0</span></li><li><span>image_url / active</span><span></span></li></ul></div>
+
+<div class="e c5" id="offers" style="left:470px;top:620px"><h4>job_offers <small>RLS · lectura pública</small></h4><ul>
+<li><span class="pk">id</span><span>uuid PK</span></li><li><span class="fk">business_id</span><span>FK businesses</span></li>
+<li><span>title / description</span><span>text</span></li><li><span>salary</span><span>≥ RMV (app_settings)</span></li>
+<li><span>schedule / contract_type</span><span>text</span></li><li><span>vacancies / status</span><span>int · abierta | cerrada</span></li></ul></div>
+
+<div class="e c5" id="applications" style="left:24px;top:620px"><h4>applications <small>RLS</small></h4><ul>
+<li><span class="pk">id</span><span>uuid PK</span></li><li><span class="fk">offer_id</span><span>FK job_offers</span></li>
+<li><span class="fk">worker_id</span><span>FK profiles</span></li><li><span>message</span><span>text ≤ 500</span></li>
+<li><span>status</span><span>enviada | en_revision | seleccionada | descartada</span></li><li><span>único (offer_id, worker_id)</span><span></span></li></ul></div>
+
+<div class="e c6" id="audit" style="left:920px;top:620px"><h4>audit_log <small>solo inserción por trigger</small></h4><ul>
+<li><span class="pk">id</span><span>bigint PK</span></li><li><span class="fk">actor_id</span><span>FK profiles</span></li>
+<li><span>action / entity / entity_id</span><span>text</span></li><li><span>details</span><span>jsonb</span></li><li><span>created_at</span><span>timestamptz</span></li></ul></div>
+
+<div class="e c1" id="settings" style="left:24px;top:885px;width:330px"><h4>app_settings <small>RMV = 1230</small></h4><ul>
+<li><span class="pk">key</span><span>text PK · value numeric</span></li></ul></div>
+
+<div class="note"><b>Notación:</b> cada línea une la clave foránea con la tabla referida; «1» y «N» indican la cardinalidad. <b>RLS</b>: la tabla tiene Row Level Security activo. Los archivos de evidencia viven en un bucket privado de Supabase Storage y la tabla solo guarda su ruta. Las columnas <i>reviewer_id</i> y <i>actor_id</i> también referencian a <i>profiles</i>.</div>
+
+<script>
+const s=document.getElementById('s');
+function box(id){const r=document.getElementById(id).getBoundingClientRect();return r}
+function anchor(r,side,dy=28){return {l:[r.left,r.top+dy],r:[r.right,r.top+dy],t:[r.left+r.width/2,r.top],b:[r.left+r.width/2,r.bottom]}[side]}
+function line(a,as,b,bs,la,lb,da=28,db=28){
+ const A=anchor(box(a),as,da),B=anchor(box(b),bs,db);
+ const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+ let d;
+ if((as=='r'||as=='l')&&(bs=='r'||bs=='l')){const mx=(A[0]+B[0])/2;d=`M${A[0]},${A[1]} C${mx},${A[1]} ${mx},${B[1]} ${B[0]},${B[1]}`}
+ else {const my=(A[1]+B[1])/2;d=`M${A[0]},${A[1]} C${A[0]},${my} ${B[0]},${my} ${B[0]},${B[1]}`}
+ p.setAttribute('d',d);p.setAttribute('fill','none');p.setAttribute('stroke','#64748b');p.setAttribute('stroke-width','1.8');s.appendChild(p);
+ const t=(pt,txt,side)=>{const e=document.createElementNS('http://www.w3.org/2000/svg','text');const o={l:[-16,-6],r:[8,-6],t:[8,-6],b:[8,16]}[side];e.setAttribute('x',pt[0]+o[0]);e.setAttribute('y',pt[1]+o[1]);e.setAttribute('class','lbl');e.textContent=txt;s.appendChild(e)};
+ t(A,la,as);t(B,lb,bs);
+}
+line('users','b','profiles','t','1','1');
+line('profiles','r','businesses','l','1','N',110,110);
+line('galleries','b','businesses','t','1','N');
+line('galleries','l','profiles','r','1','N');
+line('businesses','r','evidence','l','1','N');
+line('businesses','r','products','l','1','N');
+line('businesses','b','offers','t','1','N');
+line('offers','l','applications','r','1','N');
+line('profiles','b','applications','t','1','N');
+</script>
+</body></html>
