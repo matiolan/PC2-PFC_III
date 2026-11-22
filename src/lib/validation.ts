@@ -130,3 +130,15 @@ export const evidenceSchema = z
       ctx.addIssue({ code: "custom", path: ["file_path"], message: "Ruta de archivo inválida" });
   })
   .transform((v) => ({ ...v, doc_type: DOC_BY_LEVEL[v.level as 1 | 2 | 3 | 4] }));
+
+/** HU07: decisión del gestor; observar exige indicar el motivo. */
+export const reviewSchema = z
+  .object({
+    id: z.uuid("Evidencia inválida"),
+    decision: z.enum(["aprobada", "observada"], "Elige aprobar u observar"),
+    note: z.string().trim().max(300, "Máximo 300 caracteres").optional().default(""),
+  })
+  .refine((v) => v.decision === "aprobada" || v.note.length >= 5, {
+    path: ["note"],
+    message: "Explica el motivo de la observación (mínimo 5 caracteres)",
+  });

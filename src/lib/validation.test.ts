@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   businessSchema,
   evidenceSchema,
+  reviewSchema,
   validateEvidenceFile,
   fieldErrors,
   formValues,
@@ -113,5 +114,19 @@ describe("evidencias de formalización (HU06)", () => {
     expect(validateEvidenceFile({ type: "application/zip", size: 1000 })).toMatch(/PDF/);
     expect(validateEvidenceFile({ type: "image/png", size: 6 * 1024 * 1024 })).toMatch(/5 MB/);
     expect(validateEvidenceFile({ type: "image/png", size: 0 })).toMatch(/vacío/);
+  });
+});
+
+describe("verificación del gestor (HU07)", () => {
+  const id = "c1000000-0000-4000-8000-000000000001";
+  it("aprueba sin nota", () => {
+    expect(reviewSchema.safeParse({ id, decision: "aprobada" }).success).toBe(true);
+  });
+  it("observar exige un motivo", () => {
+    expect(reviewSchema.safeParse({ id, decision: "observada", note: "" }).success).toBe(false);
+    expect(reviewSchema.safeParse({ id, decision: "observada", note: "El RUC no es legible" }).success).toBe(true);
+  });
+  it("rechaza identificadores inválidos", () => {
+    expect(reviewSchema.safeParse({ id: "1 or 1=1", decision: "aprobada" }).success).toBe(false);
   });
 });
