@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildQuoteMessage,
+  describeAudit,
   dozenSavings,
   formalizationPercent,
   formatSoles,
@@ -96,5 +97,19 @@ describe("búsqueda en la vitrina (HU10)", () => {
   });
   it("limita la longitud", () => {
     expect(sanitizeSearch("a".repeat(100)).length).toBe(60);
+  });
+});
+
+describe("auditoría (HU18)", () => {
+  it("describe la revisión de evidencias con su nota", () => {
+    expect(describeAudit("evidencia_observada", { documento: "ruc", nivel: 2, nota: "Ilegible" })).toBe("RUC · nivel 2 · «Ilegible»");
+  });
+  it("describe el cambio de nivel", () => {
+    expect(describeAudit("nivel_actualizado", { nombre: "Pima Andina", de: 1, a: 2 })).toBe("Pima Andina: nivel 1 → 2");
+  });
+  it("describe ofertas y negocios", () => {
+    expect(describeAudit("oferta_publicada", { titulo: "Cortador", sueldo: 1650 })).toBe("Cortador · S/ 1650");
+    expect(describeAudit("negocio_registrado", { nombre: "Telas Soto" })).toBe("Telas Soto");
+    expect(describeAudit("postulacion_enviada", {})).toBe("");
   });
 });
