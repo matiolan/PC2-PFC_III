@@ -177,3 +177,38 @@ export function sanitizeSearch(q: string | undefined | null): string {
     .trim()
     .slice(0, 60);
 }
+
+export const APPLICATION_STATUS: Record<string, { label: string; tone: "neutral" | "brand" | "success" | "danger" }> = {
+  enviada: { label: "Enviada", tone: "neutral" },
+  en_revision: { label: "En revisión", tone: "brand" },
+  seleccionada: { label: "¡Seleccionado(a)!", tone: "success" },
+  descartada: { label: "No seleccionado(a)", tone: "danger" },
+};
+
+/** HU18: etiquetas legibles para el registro de auditoría. */
+export const AUDIT_ACTIONS: Record<string, string> = {
+  negocio_registrado: "Negocio registrado",
+  evidencia_subida: "Evidencia enviada",
+  evidencia_aprobada: "Evidencia aprobada",
+  evidencia_observada: "Evidencia observada",
+  nivel_actualizado: "Nivel actualizado",
+  oferta_publicada: "Oferta publicada",
+  oferta_abierta: "Oferta reabierta",
+  oferta_cerrada: "Oferta cerrada",
+  postulacion_enviada: "Postulación enviada",
+  postulacion_en_revision: "Postulación en revisión",
+  postulacion_seleccionada: "Postulante seleccionado",
+  postulacion_descartada: "Postulante descartado",
+};
+
+export function describeAudit(action: string, details: Record<string, unknown>): string {
+  const docs: Record<string, string> = { dni: "DNI", ruc: "RUC", licencia: "licencia municipal", planilla: "planilla" };
+  if (action.startsWith("evidencia_")) {
+    const base = `${docs[String(details.documento)] ?? "documento"} · nivel ${details.nivel ?? "?"}`;
+    return details.nota ? `${base} · «${details.nota}»` : base;
+  }
+  if (action === "nivel_actualizado") return `${details.nombre ?? ""}: nivel ${details.de} → ${details.a}`;
+  if (action === "negocio_registrado") return String(details.nombre ?? "");
+  if (action.startsWith("oferta_")) return `${details.titulo ?? ""}${details.sueldo ? ` · S/ ${details.sueldo}` : ""}`;
+  return "";
+}

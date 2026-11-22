@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { MapPin } from "lucide-react";
 import { LevelBadge } from "@/components/level-badge";
+import { QuoteButton } from "@/components/quote-button";
 import { dozenSavings, formatSoles } from "@/lib/domain";
 
 export type ProductCardData = {
@@ -14,7 +15,7 @@ export type ProductCardData = {
   price_unit: number;
   price_dozen: number;
   min_order: number;
-  business: { name: string; slug: string; level: number; place: string };
+  business: { name: string; slug: string; level: number; place: string; whatsapp: string };
 };
 
 export function ProductCard({ p, index = 0 }: { p: ProductCardData; index?: number }) {
@@ -61,6 +62,7 @@ export function ProductCard({ p, index = 0 }: { p: ProductCardData; index?: numb
               {formatSoles(p.price_unit)} c/u · mín. {p.min_order}
             </p>
           </div>
+          <QuoteButton businessName={p.business.name} whatsapp={p.business.whatsapp} productName={p.name} minOrder={p.min_order} variant="soft" />
         </div>
         <Link
           href={`/negocios/${p.business.slug}`}

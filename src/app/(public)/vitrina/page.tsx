@@ -4,7 +4,7 @@ import { ButtonLink, EmptyState } from "@/components/ui";
 import { CatalogFilters } from "@/components/catalog-filters";
 import { ProductCard, type ProductCardData } from "@/components/product-card";
 import { createClient } from "@/lib/supabase/server";
-import { CATEGORIES, sanitizeSearch } from "@/lib/domain";
+import { CATEGORIES, rankByFormalization, sanitizeSearch } from "@/lib/domain";
 
 export const metadata: Metadata = {
   title: "Vitrina mayorista · Gamarra Conecta",
@@ -19,6 +19,7 @@ export default async function VitrinaPage({ searchParams }: PageProps<"/vitrina"
   const q = sanitizeSearch(one("q"));
   const categoria = (CATEGORIES as readonly string[]).includes(one("categoria")) ? one("categoria") : "";
   const galeria = one("galeria");
+  const nivel = Math.min(Math.max(Number(one("nivel")) || 0, 0), 4);
   const limit = Math.min(Math.max(Number(one("mostrar")) || PAGE, PAGE), 200);
 
   const supabase = await createClient();
@@ -28,7 +29,7 @@ export default async function VitrinaPage({ searchParams }: PageProps<"/vitrina"
   let query = supabase
     .from("products")
     .select(
-      "id, name, category, image_url, price_unit, price_dozen, min_order, created_at, businesses!inner(name, slug, level, location_type, zone, gallery_id, galleries(name))",
+      "id, name, category, image_url, price_unit, price_dozen, min_order, created_at, businesses!inner(name, slug, level, whatsapp, location_type, zone, gallery_id, galleries(name))",
       { count: "exact" },
     )
     .eq("active", true);
@@ -36,20 +37,25 @@ export default async function VitrinaPage({ searchParams }: PageProps<"/vitrina"
   if (categoria) query = query.eq("category", categoria);
   if (galeria === "via-publica") query = query.eq("businesses.location_type", "via_publica");
   else if (/^[0-9a-f-]{36}$/.test(galeria)) query = query.eq("businesses.gallery_id", galeria);
+  if (nivel > 0) query = query.gte("businesses.level", nivel);
 
-  const { data, count } = await query.order("created_at", { ascending: false }).limit(limit);
+  const { data, count } = await query.order("created_at", { ascending: false }).limit(200);
 
-  const products: ProductCardData[] = (data ?? []).map((p) => ({
+  // HU13: primero los negocios con mayor nivel de formalización; a igual nivel, lo más reciente.
+  const ranked = rankByFormalization((data ?? []).map((p) => ({ ...p, level: p.businesses.level }))).slice(0, limit);
+
+  const products: ProductCardData[] = ranked.map((p) => ({
     ...p,
     business: {
       name: p.businesses.name,
       slug: p.businesses.slug,
       level: p.businesses.level,
+      whatsapp: p.businesses.whatsapp,
       place: p.businesses.location_type === "galeria" ? (p.businesses.galleries?.name ?? "Galería") : `Vía pública · ${p.businesses.zone ?? ""}`,
     },
   }));
 
-  const moreParams = new URLSearchParams(Object.entries({ q, categoria, galeria }).filter(([, v]) => v));
+  const moreParams = new URLSearchParams(Object.entries({ q, categoria, galeria, nivel: nivel ? String(nivel) : "" }).filter(([, v]) => v));
   moreParams.set("mostrar", String(limit + PAGE));
 
   return (
@@ -58,7 +64,8 @@ export default async function VitrinaPage({ searchParams }: PageProps<"/vitrina"
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-600">Vitrina mayorista</p>
         <h1 className="mt-1 text-3xl font-semibold tracking-tight text-ink-900 sm:text-4xl">Compra por docena directo a Gamarra</h1>
         <p className="mt-2 text-ink-500">
-          Compara precios por unidad y por docena. La insignia muestra cuánto ha avanzado cada negocio en su formalización.
+          Compara precios por unidad y por docena. Los negocios con mayor nivel de formalización aparecen primero: su insignia
+          fue verificada por el gestor de la galería.
         </p>
       </div>
       <CatalogFilters galleries={galleries ?? []} />
