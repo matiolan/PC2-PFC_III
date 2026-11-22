@@ -177,3 +177,10 @@ export function sanitizeSearch(q: string | undefined | null): string {
     .trim()
     .slice(0, 60);
 }
+
+export const APPLICATION_STATUS: Record<string, { label: string; tone: "neutral" | "brand" | "success" | "danger" }> = {
+  enviada: { label: "Enviada", tone: "neutral" },
+  en_revision: { label: "En revisión", tone: "brand" },
+  seleccionada: { label: "¡Seleccionado(a)!", tone: "success" },
+  descartada: { label: "No seleccionado(a)", tone: "danger" },
+};
