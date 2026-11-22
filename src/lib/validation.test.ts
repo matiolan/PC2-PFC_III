@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   businessSchema,
+  evidenceSchema,
+  validateEvidenceFile,
   fieldErrors,
   formValues,
   newPasswordSchema,
@@ -85,5 +87,31 @@ describe("utilidades de formularios", () => {
       const errs = fieldErrors(r.error);
       expect(Object.keys(errs ?? {})).toEqual(expect.arrayContaining(["email", "password"]));
     }
+  });
+});
+
+describe("evidencias de formalización (HU06)", () => {
+  const uid = "b1000000-0000-4000-8000-000000000002";
+  const file = (lvl: number, ext = "pdf") => `${uid}/${lvl}-c1000000-0000-4000-8000-0000000000aa.${ext}`;
+  it("acepta un RUC válido para el nivel 2 y asigna el tipo de documento", () => {
+    const r = evidenceSchema.safeParse({ level: "2", doc_number: "20123456789", file_path: file(2) });
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.doc_type).toBe("ruc");
+  });
+  it("rechaza un RUC que no empieza con 10 o 20", () => {
+    expect(evidenceSchema.safeParse({ level: 2, doc_number: "30123456789", file_path: file(2) }).success).toBe(false);
+  });
+  it("valida el DNI de 8 dígitos para el nivel 1", () => {
+    expect(evidenceSchema.safeParse({ level: 1, doc_number: "4587123", file_path: file(1) }).success).toBe(false);
+    expect(evidenceSchema.safeParse({ level: 1, doc_number: "45871236", file_path: file(1, "jpg") }).success).toBe(true);
+  });
+  it("rechaza rutas manipuladas", () => {
+    expect(evidenceSchema.safeParse({ level: 1, doc_number: "45871236", file_path: "../otro/archivo.pdf" }).success).toBe(false);
+  });
+  it("solo admite PDF, JPG o PNG de hasta 5 MB", () => {
+    expect(validateEvidenceFile({ type: "application/pdf", size: 1000 })).toBeNull();
+    expect(validateEvidenceFile({ type: "application/zip", size: 1000 })).toMatch(/PDF/);
+    expect(validateEvidenceFile({ type: "image/png", size: 6 * 1024 * 1024 })).toMatch(/5 MB/);
+    expect(validateEvidenceFile({ type: "image/png", size: 0 })).toMatch(/vacío/);
   });
 });

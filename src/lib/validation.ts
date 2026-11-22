@@ -95,3 +95,38 @@ export const businessSchema = z
       ? { ...v, zone: null }
       : { ...v, gallery_id: null, floor: null, stand: null },
   );
+
+export const EVIDENCE_MAX_BYTES = 5 * 1024 * 1024;
+export const EVIDENCE_TYPES = { "application/pdf": "pdf", "image/jpeg": "jpg", "image/png": "png" } as const;
+
+/** HU06: archivo de evidencia permitido (PDF, JPG o PNG de hasta 5 MB). */
+export function validateEvidenceFile(file: { type: string; size: number }): string | null {
+  if (!(file.type in EVIDENCE_TYPES)) return "Sube un PDF, JPG o PNG.";
+  if (file.size === 0) return "El archivo está vacío.";
+  if (file.size > EVIDENCE_MAX_BYTES) return "El archivo supera los 5 MB.";
+  return null;
+}
+
+const DOC_BY_LEVEL = { 1: "dni", 2: "ruc", 3: "licencia", 4: "planilla" } as const;
+
+/** HU06: número del documento según el nivel (DNI, RUC, licencia o constancia de planilla). */
+export const evidenceSchema = z
+  .object({
+    level: z.coerce.number().int().min(1).max(4),
+    doc_number: z.string().trim().toUpperCase().min(1, "Ingresa el número del documento").max(30),
+    file_path: z.string().trim().min(1).max(300),
+  })
+  .superRefine((v, ctx) => {
+    const doc = DOC_BY_LEVEL[v.level as 1 | 2 | 3 | 4];
+    const rules: Record<string, [RegExp, string]> = {
+      dni: [/^\d{8}$/, "El DNI tiene 8 dígitos"],
+      ruc: [/^(10|20)\d{9}$/, "El RUC tiene 11 dígitos y empieza con 10 o 20"],
+      licencia: [/^[A-Z0-9-]{6,30}$/, "Usa el número de licencia (6 a 30 caracteres, letras, números o guiones)"],
+      planilla: [/^[A-Z0-9-]{6,30}$/, "Usa el número de constancia (6 a 30 caracteres, letras, números o guiones)"],
+    };
+    const [re, msg] = rules[doc];
+    if (!re.test(v.doc_number)) ctx.addIssue({ code: "custom", path: ["doc_number"], message: msg });
+    if (!/^[0-9a-f-]{36}\/[1-4]-[0-9a-f-]{36}\.(pdf|jpg|png)$/.test(v.file_path))
+      ctx.addIssue({ code: "custom", path: ["file_path"], message: "Ruta de archivo inválida" });
+  })
+  .transform((v) => ({ ...v, doc_type: DOC_BY_LEVEL[v.level as 1 | 2 | 3 | 4] }));
